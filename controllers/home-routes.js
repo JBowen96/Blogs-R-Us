@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
     })
         .then(dbPostData => {
             const posts = dbPostData.map(post => post.get({ plain: true }));
-            res.render('homepage', {
+            res.render('partials/homepage', {
                 posts,
                 loggedIn: req.session.loggedIn
             });
@@ -46,7 +46,7 @@ router.get('/login', (req, res) => {
         return;
     }
 
-    res.render('login');
+    res.render('partials/login');
 });
 
 router.get('/signup', (req, res) => {
@@ -55,7 +55,7 @@ router.get('/signup', (req, res) => {
         return;
     }
 
-    res.render('signup');
+    res.render('partials/signup');
 });
 
 router.get('/post/:id', (req, res) => {
@@ -94,7 +94,7 @@ router.get('/post/:id', (req, res) => {
             const post = dbPostData.get({ plain: true });
 
             // pass data to template
-            res.render('single-post', {
+            res.render('partials/single-post', {
                 post,
                 loggedIn: req.session.loggedIn
             });

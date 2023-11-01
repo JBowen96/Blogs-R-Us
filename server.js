@@ -35,12 +35,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Set up the view engine and views directory
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
+
+// Define the SQL query to create the database if it doesn't exist
+const createDatabaseSQL = `
+    CREATE DATABASE IF NOT EXISTS tech_blog_db;
+`;
+
+// Create the database and then sync Sequelize models
+sequelize.query(createDatabaseSQL)
+    .then(() => {
+        console.log('Database created or already exists.');
+        // Continue with syncing Sequelize models
+        return sequelize.sync({ force: false });
+    })
+    .then(() => {
+        app.listen(PORT, () => console.log('Now listening'));
+    })
+    .catch(err => {
+        console.error('Error creating database or syncing Sequelize:', err);
+    });
 
 app.use(routes);
-
-// turn on connection to db and server
-sequelize.sync({ force: false }).then(() => {
-    app.listen(PORT, () => console.log('Now listening'));
-});
